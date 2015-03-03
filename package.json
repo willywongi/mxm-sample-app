@@ -1,0 +1,17 @@
+{
+  "name": "mxm-showcase",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD",
+  "devDependencies": {
+    "gulp": "~3.8.11",
+    "gulp-livereload": "~3.8.0",
+    "gulp-babel": "~4.0.0",
+    "st": "~0.5.3"
+  }
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="stylesheet" href="lib/grids-min.css">
+  	<style>
+  	#content {
+  		width: 720px;
+  		background-color: #555;
+  		color: #FFF;
+  		margin: .5em auto;
+  	}
+  	h3, h1 { text-align: center; }
+  	h1 { font-size: 96px; }
+  	.png-choice {
+  		text-align: center;
+  		padding: 1em;
+  		background-color: #ddd;
+  		color: black;
+  		transition: color, background-color;
+  		cursor: pointer;
+  	}
+  	.png-choice:hover {
+  		background-color: #bbb;
+  		color: #FFF;
+  	}
+  	.png-chosen, .png-chosen:hover {
+  		color: purple;
+  		background-color: #888;
+  	}
+  	</style>
+    <title>Lyrics Master</title>
+    <meta charset="utf-8">
+    <script src="http://fb.me/react-with-addons-0.12.2.js"></script>
+    <script src="lib/jquery-1.10.0.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script src="app.js"></script>
+		<script src="http://127.0.0.1:35730/livereload.js"></script>
+  </body>
+</html>
+
