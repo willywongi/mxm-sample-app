@@ -1,3 +1,5 @@
 game_data/
 dist/
 node_modules/
+# for intelliJ/idea/pycharm/webstorm ecc...
+.idea/
