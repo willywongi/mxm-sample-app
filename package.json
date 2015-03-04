@@ -13,5 +13,10 @@
     "gulp-livereload": "~3.8.0",
     "gulp-babel": "~4.0.0",
     "st": "~0.5.3"
+  },
+  "dependencies": {
+    "connect-livereload": "^0.5.3",
+    "express": "^4.12.2",
+    "promise": "^6.1.0"
   }
 }

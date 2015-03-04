@@ -17,6 +17,12 @@ var Word = React.createClass({
 			return (<h3>Level {levelText}</h3>);
 		}
 	}),
+	Score = React.createClass({
+		render: function() {
+			var scoreText = this.props.score + 0;
+			return (<h3>Score: {scoreText}</h3>);
+		}
+	}),
 	EmptyBox = React.createClass({
 		render: function() {
 			return <div className="pure-g empty-box"/>;
@@ -31,6 +37,9 @@ var Word = React.createClass({
 			var choice =  parseInt(e.target.getAttribute("data-choice"), 10);
 			console.log('User choose choice', choice);
 			this.setState({chosen: choice});
+		},
+		pickChoice: function(e) {
+			console.log('check with server if choice is good');
 		},
 		render: function() {
 			var chosen = this.state.chosen,
@@ -68,12 +77,17 @@ var Word = React.createClass({
 						</div>
 					</div>
 				</div>
+				<div className="pure-g">
+					<button onClick={this.pickChoice}>Scegli</button>
+				</div>
 			</div>);
 		}
 	}),
 	App = React.createClass({
 		getInitialState: function() {
-			return {}
+			return {
+				ingame: false
+			}
 		},
 		
 		handleChangeRound: function(e) {
@@ -81,6 +95,13 @@ var Word = React.createClass({
 		},
 		
 		render: function() {
+			if (this.state.ingame) {
+				var word = <Word text={this.props.word} />,
+					response = <ResponseBox choices={this.props.choices} />;
+			} else {
+				var word = <EmptyBox />,
+					response = <EmptyBox />;
+			}
 			return (
 			<div>
 				<div className="pure-g">
@@ -88,10 +109,9 @@ var Word = React.createClass({
 					<div className="pure-u-1-2"><Level number={this.props.level}/></div>
 				</div>
 				<div className="jumbo">
-					<Word text={this.props.word} />
+				{word}
 				</div>
-				<div><ResponseBox choices={this.props.choices} /></div>
-				
+				<div>{response}</div>
 			</div>
 			);
 		}

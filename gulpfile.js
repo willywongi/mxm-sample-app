@@ -7,9 +7,12 @@ var path = require('path'),
     st = require('st'),
     babel = require("gulp-babel"),
     Promise = require('promise'),
-    fs = require('fs');
+    fs = require('fs'),
+	express = require('express');
 
-gulp.task('default', ['build', 'server', 'watch']);
+var app = express();
+
+gulp.task('default', ['build', 'server']);
 
 gulp.task('build', function() {
 	gulp.src("src/index.html").pipe(gulp.dest("dist"));
@@ -19,20 +22,42 @@ gulp.task('build', function() {
 		.pipe(gulp.dest("dist"));
 });
 
-gulp.task('watch', function() {
-  livereload.listen({
-	  port: 35730
-  });
-  gulp.watch('src/*', ['build', function(evt) {
-		console.log(evt);
-		livereload.reload();
-  }]);
+//gulp.task('watch', function() {
+//  livereload.listen({
+//	  port: 35730
+//  });
+//  gulp.watch('src/*', ['build', function(evt) {
+//		console.log(evt);
+//		livereload.reload();
+//  }]);
+//});
+
+var EVENT;
+
+gulp.task('reload', function() {
+	console.log(EVENT);
+	if (EVENT) {
+		livereload.changed(EVENT.path);
+		EVENT = null;
+	} else {
+		
+	}
 });
 
 gulp.task('server', function(done) {
-  http.createServer(
-    st({ path: __dirname + '/dist', index: 'index.html', cache: false })
-  ).listen(8080, done);
+	// startup livereload server on default port: 35729
+	livereload.listen(35730);
+	// inject the livereload script
+	app.use(require('connect-livereload')());
+	// serve static files from ./dist
+	app.use(express.static(path.join(__dirname, 'dist')));
+
+	// reload the page when a file under ./src/ changes
+	gulp.watch('src/*', ['build', 'reload']).on('change', function(event) {
+		console.log("changed", event.path);
+ 		EVENT = event;
+	});
+	app.listen(8090);
 });
 
 function downloadFile(url, destination) {
