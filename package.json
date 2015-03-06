@@ -17,6 +17,8 @@
   "dependencies": {
     "connect-livereload": "^0.5.3",
     "express": "^4.12.2",
-    "promise": "^6.1.0"
+    "natural": "^0.2.0",
+    "promise": "^6.1.0",
+    "underscore": "^1.8.2"
   }
 }
