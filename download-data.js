@@ -89,6 +89,7 @@ mxm.method('chart.tracks.get', {
 		// Now I got all the lyrics
 		var index,
 			wordsFile = path.join(gameDataPath, "words.json"),
+			otherStopwords = ['don', 've', 'll', 'ain', 'didn', 'mo', 'la', 're'],
 			allWords = Object.keys(songs)
 				.map(function(track_id) {
 					var lyrics_body = songs[track_id].lyrics_body.replace(copyrightText, ''),
@@ -107,6 +108,11 @@ mxm.method('chart.tracks.get', {
 										return isNaN(parseInt(w, 10)); });
 		/* remove one letter words */
 		allWords = _.filter(allWords, function(w) {	return w.length != 1; });
+		
+		/* remove other stopwords */
+		/* remove stopwords */
+		allWords = _.filter(allWords, function(w) {
+										return otherStopwords.indexOf(w) == -1; });
 		
 		index = _.countBy(allWords, function(word) { return word; });
 		

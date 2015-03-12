@@ -14,7 +14,7 @@ var GENRES = {
 	}),
 	Level = React.createClass({
 		render: function() {
-			var levelText = this.props.number + 1;
+			var levelText = this.props.number;
 			return (<h3>Level {levelText}</h3>);
 		}
 	}),
@@ -46,12 +46,12 @@ var GENRES = {
 			var chosen = this.state.chosen,
 				// fixme: usare underscore? http://underscorejs.org/#range
 				classes = [0, 1, 2, 3].map(function(i) {
-					return React.addons.classSet({
-						'png-choice': true,
-						'png-chosen': chosen === i
-					});
+					var c = ['png-choice'];
+					if (chosen === i) {
+						c.push('png-chosen');
+					}
+					return c.join(" ");
 				});
-			console.log(this.state);
 			return (
 			<div className="pure-g">
 				<div className="pure-g">
@@ -86,9 +86,7 @@ var GENRES = {
 	}),
 	App = React.createClass({
 		getInitialState: function() {
-			return {
-				round: 0
-			}
+			return {'round': 0};
 		},
 		
 		nextRound: function(e) {
@@ -103,15 +101,33 @@ var GENRES = {
 					self.setState(json['roundData']);
 				});
 		},
-		
+		goNextRound: function() {
+			var self = this;
+			fetch('/nextRound?round=' + this.state['round'])
+				.then(function(response) {
+					return response.json()
+				}).then(function(json) {
+					self.setState({'round': json['round']});
+					self.setProps({
+						word: json.word,
+						choices: json.choices,
+						level: json.level
+					});
+				});
+		},
 		render: function() {
-			if (this.state.round) {
-				var word = <Word text={this.props.word} />,
-					response = <ResponseBox choices={this.props.choices} />;
+			var jumbo, choices;
+			if (this.state['round'] === 0) {
+				jumbo = <h1 id='start-button' onClick={this.goNextRound}>START</h1>;
 			} else {
-				var word = <div onClick={this.nextRound}>START</div>,
-					response = <EmptyBox />;
+				jumbo = <Word text={this.props.word} />;
 			}
+			if (this.props.choices) {
+				choices = <ResponseBox choices={this.props.choices} />;
+			} else {
+				choices = <div />;
+			}
+			
 			return (
 			<div>
 				<div className="pure-g">
@@ -119,27 +135,28 @@ var GENRES = {
 					<div className="pure-u-1-2"><Level number={this.props.level}/></div>
 				</div>
 				<div className="jumbo">
-				{word}
+					{jumbo}
 				</div>
-				<div>{response}</div>
+				<div>{choices}</div>
 			</div>
 			);
 		}
 	});
-var props = {
-	genre: 1152,
-	level: 0,
-	'round': 0,
-	players: 1,
-	//word: "light",
-	//choices: [
-	//	"Metallica - Enter Sandman",
-	//	"Speck&Strudel - Speck",
-	//	"Bon Jovi - Forever",
-	//	"Kiss - I was made for loving you"
-	//],
-	chosen: null
-};
-React.render(<App {...props}/>, document.getElementById('content'));
-
+(function() {
+	var props = {
+		genre: 1152,
+		level: 0,
+		/*
+		word: "light",
+		choices: [
+			"Metallica - Enter Sandman",
+			"Speck&Strudel - Speck",
+			"Bon Jovi - Forever",
+			"Kiss - I was made for loving you"
+		],
+		*/
+	};
+	React.render(<App {...props}/>, document.getElementById('content'));
+}());
+	
 

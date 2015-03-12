@@ -16,7 +16,7 @@
   		padding: 1em;
   		background-color: #ddd;
   		color: black;
-  		transition: color, background-color;
+  		transition: color 0.25s ease 0s, background-color 0.25s ease 0s;
   		cursor: pointer;
   	}
   	.png-choice:hover {
@@ -24,8 +24,16 @@
   		color: #FFF;
   	}
   	.png-chosen, .png-chosen:hover {
-  		color: purple;
+  		color: #FFF;
   		background-color: #888;
+  	}
+  	#start-button {
+  		text-shadow: 0 0 20px #222;
+  		transition: text-shadow 0.2s ease-out;
+  		cursor: pointer;
+  	}
+  	#start-button:hover {
+  		text-shadow: 0 0 15px #444;
   	}
   	</style>
     <title>Lyrics Master</title>
@@ -33,10 +41,9 @@
   </head>
   <body>
     <div id="content"></div>
-		<script src="lib/react-0.13.0.min.js"></script>
+		<script src="lib/react-0.13.0.js"></script>
 		<script src="lib/fetch.js"></script>
-		<script src="lib/classnames.js"></script>
-    <script src="app.js"></script>
+	    <script src="app.js"></script>
 		<script src="http://127.0.0.1:35730/livereload.js"></script>
   </body>
 </html>

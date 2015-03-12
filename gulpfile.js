@@ -11,6 +11,18 @@ var path = require('path'),
 
 var app = express();
 
+function readFile(filePath) {
+	return new Promise(function(resolve, reject) {
+		fs.readFile(filePath, function(err, data) {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(data);
+			}
+		});
+	});
+}
+
 gulp.task('default', ['build', 'server']);
 
 gulp.task('build', function() {
@@ -49,8 +61,18 @@ var MOCKEDUP_WORDS = {
 		['myself', 'participate', 'continue'],
 		['debacle', 'conundrum', 'impractical']
 	]
+},
+	LEVELS = 5;
+	
+function getLevels(words) {
+	var levels = Object.keys(words);
+	levels.sort(function(a,b) {
+		return parseInt(a, 10) - parseInt(b, 10);
+	});
+	levels.reverse();
+	return levels;
 }
-
+	
 gulp.task('server', function(done) {
 	// startup livereload server on default port: 35729
 	livereload.listen(35730);
@@ -60,19 +82,30 @@ gulp.task('server', function(done) {
 	app.use(express.static(path.join(__dirname, 'dist')));
 	
 	app.get('/nextRound', function(req, res) {
-		var nextRound = parseInt(req.query.round, 10) + 1,
-			level = Math.max(Math.floor(nextRound / 3), MOCKEDUP_WORDS.levels.length - 1);
-		console.log('nextRound %s, level %s', nextRound, level);
-		res.json({
-			'roundData': {
-				'round': nextRound,
-				word: MOCKEDUP_WORDS.levels[level][0],
-				choices: [
-					'a', 'b', 'c', 'd'
-				]
-			}
-		});
+		readFile('game_data/words.json')
+			.then(function(fileData) {
+				var words = JSON.parse(fileData),
+					levels = getLevels(words),
+					nextRound = parseInt(req.query.round, 10) + 1,
+					level = levels[((nextRound < levels.length) ? nextRound : levels.length) - 1],
+					possibleWords = words[level],
+					word = possibleWords[Math.floor(Math.random() * possibleWords.length)];
+				res.json({
+					'round': nextRound,
+					level: level,
+					word: word,
+					choices: ['a', 'b', 'c', 'd']
+				});
+			}, function() {
+				res.json({'error': 'impossible to read game data'});
+			});
 	});	
+	app.get('/checkWord', function(req, res) {
+		var word = req.query.word,
+			song = req.query.song;
+			
+		
+	});
 
 	// reload the page when a file under ./src/ changes
 	gulp.watch('src/*', ['build', 'reload']).on('change', function(event) {
