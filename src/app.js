@@ -1,7 +1,7 @@
+
 var GENRES = {
 		1152: "Hard Rock"
 	},
-	AppDispatcher = new Dispatcher(), 	
 	Word = React.createClass({
 		render: function() {
 			return (<h1>{this.props.text} </h1>);
@@ -9,7 +9,7 @@ var GENRES = {
 	}),
 	Genre = React.createClass({
 		render: function() {
-			return (<h3>{this.GENRES[this.props.genre]}</h3>);
+			return (<h3>{GENRES[this.props.genre]}</h3>);
 		}
 	}),
 	Level = React.createClass({
@@ -87,20 +87,29 @@ var GENRES = {
 	App = React.createClass({
 		getInitialState: function() {
 			return {
-				ingame: false
+				round: 0
 			}
 		},
 		
-		handleChangeRound: function(e) {
-			this.setState({'round': e.target.value});
+		nextRound: function(e) {
+			var self = this;
+			fetch('/nextRound?round=' + this.state['round'])
+				.then(function(response) {
+					console.log(response);
+					return response.json();
+				})
+				.then(function(json) {
+					console.log(json);
+					self.setState(json['roundData']);
+				});
 		},
 		
 		render: function() {
-			if (this.state.ingame) {
+			if (this.state.round) {
 				var word = <Word text={this.props.word} />,
 					response = <ResponseBox choices={this.props.choices} />;
 			} else {
-				var word = <EmptyBox />,
+				var word = <div onClick={this.nextRound}>START</div>,
 					response = <EmptyBox />;
 			}
 			return (
@@ -117,22 +126,20 @@ var GENRES = {
 			);
 		}
 	});
-$(document).ready(function() {
-	var props = {
-		genre: 1152,
-		level: 0,
-		'round': 0,
-		players: 1,
-		word: "light",
-		choices: [
-			"Metallica - Enter Sandman",
-			"Speck&Strudel - Speck",
-			"Bon Jovi - Forever",
-			"Kiss - I was made for loving you"
-		],
-		chosen: null
-	};
-	React.render(<App {...props}/>, document.getElementById('content'));
-});
-	
+var props = {
+	genre: 1152,
+	level: 0,
+	'round': 0,
+	players: 1,
+	//word: "light",
+	//choices: [
+	//	"Metallica - Enter Sandman",
+	//	"Speck&Strudel - Speck",
+	//	"Bon Jovi - Forever",
+	//	"Kiss - I was made for loving you"
+	//],
+	chosen: null
+};
+React.render(<App {...props}/>, document.getElementById('content'));
+
 

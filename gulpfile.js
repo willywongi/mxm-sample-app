@@ -4,7 +4,6 @@ var path = require('path'),
 	gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     http = require('http'),
-    st = require('st'),
     babel = require("gulp-babel"),
     Promise = require('promise'),
     fs = require('fs'),
@@ -44,6 +43,14 @@ gulp.task('reload', function() {
 	}
 });
 
+var MOCKEDUP_WORDS = {
+	levels: [
+		['love', 'woman', 'between'],
+		['myself', 'participate', 'continue'],
+		['debacle', 'conundrum', 'impractical']
+	]
+}
+
 gulp.task('server', function(done) {
 	// startup livereload server on default port: 35729
 	livereload.listen(35730);
@@ -51,6 +58,21 @@ gulp.task('server', function(done) {
 	app.use(require('connect-livereload')());
 	// serve static files from ./dist
 	app.use(express.static(path.join(__dirname, 'dist')));
+	
+	app.get('/nextRound', function(req, res) {
+		var nextRound = parseInt(req.query.round, 10) + 1,
+			level = Math.max(Math.floor(nextRound / 3), MOCKEDUP_WORDS.levels.length - 1);
+		console.log('nextRound %s, level %s', nextRound, level);
+		res.json({
+			'roundData': {
+				'round': nextRound,
+				word: MOCKEDUP_WORDS.levels[level][0],
+				choices: [
+					'a', 'b', 'c', 'd'
+				]
+			}
+		});
+	});	
 
 	// reload the page when a file under ./src/ changes
 	gulp.watch('src/*', ['build', 'reload']).on('change', function(event) {
@@ -80,9 +102,9 @@ function downloadFile(url, destination) {
 
 gulp.task('download', function(done) {
 	var libs = [
-			"http://code.jquery.com/jquery-1.10.0.min.js",
-			"http://fb.me/react-with-addons-0.12.2.js",
-			"http://yui.yahooapis.com/combo?pure/0.6.0/base-min.css&pure/0.6.0/grids-min.css"
+			"http://fb.me/react-0.13.0.js",
+			"http://yui.yahooapis.com/combo?pure/0.6.0/base-min.css&pure/0.6.0/grids-min.css",
+			"https://raw.githubusercontent.com/github/fetch/master/fetch.js"
 		],
 		libPath = path.join(__dirname, "src", "lib");
 	try {
@@ -97,7 +119,7 @@ gulp.task('download', function(done) {
 		return downloadFile(url, path.join(libPath, url.split("/").reverse()[0]));
 	})).then(function() {
 		done();
-	});
+	}, function(err) { throw err; });
 	
 });
 
