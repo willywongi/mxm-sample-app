@@ -1,12 +1,13 @@
-var Word = React.createClass({
+var GENRES = {
+		1152: "Hard Rock"
+	},
+	AppDispatcher = new Dispatcher(), 	
+	Word = React.createClass({
 		render: function() {
 			return (<h1>{this.props.text} </h1>);
 		} 
 	}),
 	Genre = React.createClass({
-		GENRES: {
-			1152: "Hard Rock"
-		},
 		render: function() {
 			return (<h3>{this.GENRES[this.props.genre]}</h3>);
 		}

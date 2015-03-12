@@ -81,7 +81,7 @@ mxm.method('chart.tracks.get', {
 					lyrics_body: body.lyrics.lyrics_body,
 					track_name: o.track.track_name,
 					artist_name: o.track.artist_name
-				}
+				};
 				fs.writeFile(lyricsPath, JSON.stringify(body, null, 2));
 			});
 		});
@@ -108,7 +108,7 @@ mxm.method('chart.tracks.get', {
 		/* remove one letter words */
 		allWords = _.filter(allWords, function(w) {	return w.length != 1; });
 		
-		var index = _.countBy(allWords, function(word) { return word; });
+		index = _.countBy(allWords, function(word) { return word; });
 		
 		var reverseIndex = _.groupBy(Object.keys(index), function(w) { return index[w]; });
 		
