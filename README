@@ -1,1 +1,12 @@
 Sample application with Musixmatch API. Requires a valid API KEY in the "keys.js" file.
+
+Instructions
+
+- clone repo
+- run `npm install`
+- add your musixmatch app key to the file keys.js
+- run `node download-data.js`; this will download the top 100 songs and index the words
+- run `gulp`
+- open http://localhost:8090
+
+

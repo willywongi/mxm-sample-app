@@ -82,11 +82,11 @@ gulp.task('server', function(done) {
 	app.use(express.static(path.join(__dirname, 'dist')));
 	
 	app.get('/nextRound', function(req, res) {
+		var nextRound = parseInt(req.query.round, 10) + 1;
 		readFile('game_data/words.json')
 			.then(function(fileData) {
 				var words = JSON.parse(fileData),
 					levels = getLevels(words),
-					nextRound = parseInt(req.query.round, 10) + 1,
 					level = levels[((nextRound < levels.length) ? nextRound : levels.length) - 1],
 					possibleWords = words[level],
 					word = possibleWords[Math.floor(Math.random() * possibleWords.length)];
@@ -97,7 +97,13 @@ gulp.task('server', function(done) {
 					choices: ['a', 'b', 'c', 'd']
 				});
 			}, function() {
-				res.json({'error': 'impossible to read game data'});
+				res.json({
+					'error': 'impossible to read game data',
+					'round': nextRound,
+					level: nextRound,
+					word: "love",
+					choices: ['a', 'b', 'c', 'd']
+				});
 			});
 	});	
 	app.get('/checkWord', function(req, res) {
@@ -136,7 +142,7 @@ function downloadFile(url, destination) {
 gulp.task('download', function(done) {
 	var libs = [
 			"http://fb.me/react-0.13.0.js",
-			"http://yui.yahooapis.com/combo?pure/0.6.0/base-min.css&pure/0.6.0/grids-min.css",
+			"http://yui.yahooapis.com/combo?pure/0.6.0/base-min.css&pure/0.6.0/grids-min.css&pure/0.6.0/forms-min.css",
 			"https://raw.githubusercontent.com/github/fetch/master/fetch.js"
 		],
 		libPath = path.join(__dirname, "src", "lib");

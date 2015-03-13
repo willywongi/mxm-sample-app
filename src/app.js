@@ -1,21 +1,13 @@
 
-var GENRES = {
-		1152: "Hard Rock"
-	},
-	Word = React.createClass({
+var Word = React.createClass({
 		render: function() {
-			return (<h1>{this.props.text} </h1>);
+			return (<h1 className="png-word">{this.props.text}</h1>);
 		} 
-	}),
-	Genre = React.createClass({
-		render: function() {
-			return (<h3>{GENRES[this.props.genre]}</h3>);
-		}
 	}),
 	Level = React.createClass({
 		render: function() {
 			var levelText = this.props.number;
-			return (<h3>Level {levelText}</h3>);
+			return (<h3 className="png-level">Level {levelText}</h3>);
 		}
 	}),
 	Score = React.createClass({
@@ -51,7 +43,8 @@ var GENRES = {
 						c.push('png-chosen');
 					}
 					return c.join(" ");
-				});
+				}),
+				buttonDisabled = (chosen === null) ? 'png-confirm-button disabled' : 'png-confirm-button';
 			return (
 			<div className="pure-g">
 				<div className="pure-g">
@@ -78,8 +71,8 @@ var GENRES = {
 						</div>
 					</div>
 				</div>
-				<div className="pure-g">
-					<button onClick={this.pickChoice}>Scegli</button>
+				<div className="pure-g png-confirm">
+					<button className={buttonDisabled} onClick={this.pickChoice}>Scegli</button>
 				</div>
 			</div>);
 		}
@@ -125,14 +118,14 @@ var GENRES = {
 			if (this.props.choices) {
 				choices = <ResponseBox choices={this.props.choices} />;
 			} else {
-				choices = <div />;
+				choices = <div className='spacer' />;
 			}
 			
 			return (
 			<div>
 				<div className="pure-g">
-					<div className="pure-u-1-2"><Genre genre={this.props.genre}/></div>
-					<div className="pure-u-1-2"><Level number={this.props.level}/></div>
+					<div className="pure-u-1-2"><h3 className="png-title">Lyrics Master</h3></div>
+					<div className="pure-u-1-2"><Level number={this.props.level} /></div>
 				</div>
 				<div className="jumbo">
 					{jumbo}
